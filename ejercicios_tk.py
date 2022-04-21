@@ -3,15 +3,26 @@ import csv
 
 import tkinter as tk
 
+import pymysql
 
-def Guarda_registro(D_nombre,D_apellido,D_cedula,D_sexo):
+def Guarda_registro(D_nombre,D_apellido,D_cedula,D_genero):
+    miconexion = pymysql.connect(
+        host="localhost",
+        user="root",
+        passwd="", #colocar contraseña
+        database="registros"
+        )
+    cur = miconexion.cursor()
 
-    with open('bases_de_datos.csv', 'w') as csvfile:
-        fieldnames = ['nombre', 'apellido', 'cedula',"sexo"]
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({'nombre': D_nombre, 'apellido': D_apellido, 'cedula': D_cedula, "sexo" : D_sexo})
-    print(D_nombre,"hola")
+    consultas = "INSERT INTO registros.registros_de_empleados(nombre,Apellido,Cedula,Genero) VALUES (%s , %s , %s, %s)"
+    valor = (D_nombre, D_apellido,D_cedula,D_genero)
+
+    cur.execute(consultas,valor)
+
+    miconexion.commit()
+
+    miconexion.close()
+    print(valor)
 
 def Botones_principales(gui):
     boton_registro = tk.Button(gui,text="nuevo registro de empleado" , command=registro_ventana)
@@ -25,8 +36,8 @@ def registro_ventana():
     # almacen de datos
     D_nombre = tk.StringVar()
     D_apellido = tk.StringVar()
-    D_cedula = tk.StringVar()
-    D_sexo = tk.StringVar()
+    D_cedula = tk.IntVar()
+    D_genero = tk.StringVar()
 
     #campos de texto
 
@@ -39,8 +50,8 @@ def registro_ventana():
     campo_cedula = tk.Entry(ventana_de_registro, textvariable=D_cedula)
     campo_cedula.grid(row=3, column=1, columnspan=2)
 
-    campo_sexo = tk.Entry(ventana_de_registro, textvariable=D_sexo)
-    campo_sexo.grid(row=4, column=1, columnspan=2)
+    campo_genero = tk.Entry(ventana_de_registro, textvariable=D_genero)
+    campo_genero.grid(row=4, column=1, columnspan=2)
 
     #etiquetas
 
@@ -53,11 +64,11 @@ def registro_ventana():
     etiqueta_cedula = tk.Label(ventana_de_registro, text="Cedula")
     etiqueta_cedula.grid(row=3,column=0)
 
-    etiqueta_sexo = tk.Label(ventana_de_registro, text="sexo")
-    etiqueta_sexo.grid(row=4,column=0)
+    etiqueta_genero = tk.Label(ventana_de_registro, text="sexo")
+    etiqueta_genero.grid(row=4,column=0)
 
     #botones
-    boton_guardar = tk.Button(ventana_de_registro, text="Guarda", command=lambda: [Guarda_registro(D_nombre=campo_nombre.get(), D_apellido=campo_apellidos.get(), D_cedula=campo_cedula.get(), D_sexo=campo_sexo.get())])
+    boton_guardar = tk.Button(ventana_de_registro, text="Guarda", command=lambda:[Guarda_registro(D_nombre=campo_nombre.get(), D_apellido=campo_apellidos.get(), D_cedula=campo_cedula.get(), D_genero=campo_genero.get())])
     boton_guardar.grid(row=5, column=0)
 
     #boton_Consultar = tk.Button(ventana_de_registro, text="Consultar", command=lambda :Guarda_registro(D_nombre=campo_nombre.get(),D_apellido=campo_apellidos.get(),D_cedula=campo_cedula.get(),D_sexo=campo_sexo.get()))
