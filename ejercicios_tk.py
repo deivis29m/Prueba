@@ -9,7 +9,7 @@ def Guarda_registro(D_nombre,D_apellido,D_cedula,D_genero):
     miconexion = pymysql.connect(
         host="localhost",
         user="root",
-        passwd="", #colocar contraseña
+        passwd="d748159263", #colocar contraseña
         database="registros"
         )
     cur = miconexion.cursor()
